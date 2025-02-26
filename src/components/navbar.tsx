@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from '../assets/images/logo-white.png'
@@ -13,6 +14,7 @@ export default function Navbar() {
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const mobileMenuRef = useRef<HTMLDivElement>(null);
+    const pathName = usePathname();
 
     const closeMenus = () => {
         setIsMobileMenuOpen(false);
@@ -83,15 +85,15 @@ export default function Navbar() {
                             <div className="flex space-x-2">
                                 <Link
                                     href="/"
-                                    className="text-white bg-black hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">Home
+                                    className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/' ? 'bg-black' : ''}`}>Home
                                 </Link>
                                 <Link
                                     href="/properties"
-                                    className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">Properties
+                                    className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties' ? 'bg-black' : ''}`}>Properties
                                 </Link>
                                 <Link
                                     href="/properties/add"
-                                    className="text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
+                                    className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties/add' ? 'bg-black' : ''}`}>
                                     Add Property
                                 </Link>
                             </div>
@@ -202,15 +204,15 @@ export default function Navbar() {
                         <Link
                             href="/"
                             onClick={closeMenus}
-                            className="bg-black text-white block rounded-md px-3 py-2 text-base font-medium">Home</Link>
+                            className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/' ? 'bg-black' : ''}`}>Home</Link>
                         <Link
                             href="/properties"
                             onClick={closeMenus}
-                            className="text-white block rounded-md px-3 py-2 text-base font-medium">Properties</Link>
+                            className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties' ? 'bg-black' : ''}`}>Properties</Link>
                         <Link
                             href="/properties/add"
                             onClick={closeMenus}
-                            className="text-white block rounded-md px-3 py-2 text-base font-medium">Add Property</Link>
+                            className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties/add' ? 'bg-black' : ''}`}>Add Property</Link>
                         <button
                             onClick={closeMenus}
                             className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-5">
