@@ -15,10 +15,16 @@ export default function Navbar() {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const mobileMenuRef = useRef<HTMLDivElement>(null);
     const pathName = usePathname();
+    const [isLogged, setIsLogged] = useState(false);
 
     const closeMenus = () => {
         setIsMobileMenuOpen(false);
         setIsProfileMenuOpen(false);
+    };
+
+    const handleMobileMenuClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsMobileMenuOpen(prev => !prev);
     };
 
     useEffect(() => {
@@ -26,7 +32,14 @@ export default function Navbar() {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsProfileMenuOpen(false);
             }
-            if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+
+            // Get the mobile menu button element
+            const mobileButton = document.getElementById('mobile-dropdown-button');
+
+            // Only close the mobile menu if the click is outside both the menu and the button
+            if (mobileMenuRef.current &&
+                !mobileMenuRef.current.contains(event.target as Node) &&
+                !mobileButton?.contains(event.target as Node)) {
                 setIsMobileMenuOpen(false);
             }
         }
@@ -48,8 +61,8 @@ export default function Navbar() {
                             id="mobile-dropdown-button"
                             className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                             aria-controls="mobile-menu"
-                            aria-expanded="false"
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-expanded={isMobileMenuOpen}
+                            onClick={handleMobileMenuClick}
                         >
                             <span className="absolute -inset-0.5"></span>
                             <span className="sr-only">Open main menu</span>
@@ -101,99 +114,102 @@ export default function Navbar() {
                     </div>
 
                     {/* <!-- Right Side Menu (Logged Out) --> */}
-                    <div className="hidden md:block md:ml-6">
-                        <div className="flex items-center">
-                            <button
-                                className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
-                                <FaGoogle className="text-white mr-2" />
-                                <span>Login or Register</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* <!-- Right Side Menu (Logged In) --> */}
-                    <div
-                        className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
-                        <Link href="/messages" className="relative group">
-                            <button
-                                type="button"
-                                className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                                <span className="absolute -inset-1.5"></span>
-                                <span className="sr-only">View notifications</span>
-                                <svg
-                                    className="h-6 w-6"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    aria-hidden="true">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                                </svg>
-                            </button>
-                            <span
-                                className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
-                                2
-                                {/* <!-- Replace with the actual number of notifications --> */}
-                            </span>
-                        </Link>
-                        {/* <!-- Profile dropdown button --> */}
-
-                        <div className="relative ml-3" ref={dropdownRef}>
-                            <div>
+                    {!isLogged && (
+                        <div className="hidden md:block md:ml-6">
+                            <div className="flex items-center">
                                 <button
-                                    type="button"
-                                    className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                    id="user-menu-button"
-                                    aria-expanded="false"
-                                    aria-haspopup="true"
-                                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
-                                    <span className="absolute -inset-1.5"></span>
-                                    <span className="sr-only">Open user menu</span>
-                                    <Image
-                                        className="h-8 w-8 rounded-full"
-                                        src={profileDefault}
-                                        alt="" />
+                                    className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2">
+                                    <FaGoogle className="text-white mr-2" />
+                                    <span>Login or Register</span>
                                 </button>
                             </div>
+                        </div>
+                    )}
+                    {/* <!-- Right Side Menu (Logged In) --> */}
+                    {isLogged && (
+                        <div
+                            className="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
+                            <Link href="/messages" className="relative group">
+                                <button
+                                    type="button"
+                                    className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                    <span className="absolute -inset-1.5"></span>
+                                    <span className="sr-only">View notifications</span>
+                                    <svg
+                                        className="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        aria-hidden="true">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                    </svg>
+                                </button>
+                                <span
+                                    className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                    2
+                                    {/* <!-- Replace with the actual number of notifications --> */}
+                                </span>
+                            </Link>
+                            {/* <!-- Profile dropdown button --> */}
 
-                            {/* <!-- Profile dropdown --> */}
-                            {isProfileMenuOpen && (
-                                <div
-                                    id="user-menu"
-                                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                    role="menu"
-                                    tabIndex={-1}
-                                    aria-orientation="vertical"
-                                    aria-labelledby="user-menu-button">
-                                    <Link
-                                        href="/profile"
-                                        onClick={closeMenus}
-                                        className="block px-4 py-2 text-sm text-gray-700"
-                                        role="menuitem"
-                                        tabIndex={-1}
-                                        id="user-menu-item-0">Your Profile</Link>
-                                    <Link
-                                        href="/saved-properties"
-                                        onClick={closeMenus}
-                                        className="block px-4 py-2 text-sm text-gray-700"
-                                        role="menuitem"
-                                        tabIndex={-1}
-                                        id="user-menu-item-2">Saved Properties</Link>
+                            <div className="relative ml-3" ref={dropdownRef}>
+                                <div>
                                     <button
-                                        onClick={closeMenus}
-                                        className="block px-4 py-2 text-sm text-gray-700"
-                                        role="menuitem"
-                                        tabIndex={-1}
-                                        id="user-menu-item-2">
-                                        Sign Out
+                                        type="button"
+                                        className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                        id="user-menu-button"
+                                        aria-expanded="false"
+                                        aria-haspopup="true"
+                                        onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}>
+                                        <span className="absolute -inset-1.5"></span>
+                                        <span className="sr-only">Open user menu</span>
+                                        <Image
+                                            className="h-8 w-8 rounded-full"
+                                            src={profileDefault}
+                                            alt="" />
                                     </button>
                                 </div>
-                            )}
+
+                                {/* <!-- Profile dropdown --> */}
+                                {isProfileMenuOpen && (
+                                    <div
+                                        id="user-menu"
+                                        className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                        role="menu"
+                                        tabIndex={-1}
+                                        aria-orientation="vertical"
+                                        aria-labelledby="user-menu-button">
+                                        <Link
+                                            href="/profile"
+                                            onClick={closeMenus}
+                                            className="block px-4 py-2 text-sm text-gray-700"
+                                            role="menuitem"
+                                            tabIndex={-1}
+                                            id="user-menu-item-0">Your Profile</Link>
+                                        <Link
+                                            href="/saved-properties"
+                                            onClick={closeMenus}
+                                            className="block px-4 py-2 text-sm text-gray-700"
+                                            role="menuitem"
+                                            tabIndex={-1}
+                                            id="user-menu-item-2">Saved Properties</Link>
+                                        <button
+                                            onClick={closeMenus}
+                                            className="block px-4 py-2 text-sm text-gray-700"
+                                            role="menuitem"
+                                            tabIndex={-1}
+                                            id="user-menu-item-2">
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
 
@@ -209,16 +225,20 @@ export default function Navbar() {
                             href="/properties"
                             onClick={closeMenus}
                             className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties' ? 'bg-black' : ''}`}>Properties</Link>
-                        <Link
-                            href="/properties/add"
-                            onClick={closeMenus}
-                            className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties/add' ? 'bg-black' : ''}`}>Add Property</Link>
-                        <button
-                            onClick={closeMenus}
-                            className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-5">
-                            <i className="fa-brands fa-google mr-2"></i>
-                            <span>Login or Register</span>
-                        </button>
+                        {isLogged && (
+                            <Link
+                                href="/properties/add"
+                                onClick={closeMenus}
+                                className={`text-white block rounded-md px-3 py-2 text-base font-medium ${pathName === '/properties/add' ? 'bg-black' : ''}`}>Add Property</Link>
+                        )}
+                        {!isLogged && (
+                            <button
+                                onClick={closeMenus}
+                                className="flex items-center text-white bg-gray-700 hover:bg-gray-900 hover:text-white rounded-md px-3 py-2 my-5">
+                                <i className="fa-brands fa-google mr-2"></i>
+                                <span>Login or Register</span>
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
