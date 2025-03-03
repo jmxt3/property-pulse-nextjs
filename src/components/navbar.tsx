@@ -4,8 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link'
 import Image from 'next/image'
-import logo from '../assets/images/logo-white.png'
-import profileDefault from '../assets/images/profile.png'
+import logo from '@/assets/images/logo-white.png'
 import { FaGoogle } from "react-icons/fa";
 
 export default function Navbar() {
@@ -87,8 +86,11 @@ export default function Navbar() {
                         <Link className="flex flex-shrink-0 items-center" href="/">
                             <Image
                                 className="h-10 w-auto"
-                                src={logo}
+                                src="/images/logo-white.png"
                                 alt="PropertyPulse"
+                                width='0'
+                                height='0'
+                                sizes='100vw'
                             />
 
                             <span className="hidden md:block text-white text-2xl font-bold ml-2">Imóveis de Sonho</span>
@@ -169,7 +171,7 @@ export default function Navbar() {
                                         <span className="sr-only">Open user menu</span>
                                         <Image
                                             className="h-8 w-8 rounded-full"
-                                            src={profileDefault}
+                                            src="/assets/images/profile.png"
                                             alt="" />
                                     </button>
                                 </div>
