@@ -24,6 +24,7 @@ interface Property {
 }
 
 const PropertyCard = ({ property }: { property: Property }) => {
+
     const getRateDisplay = () => {
         const { rates } = property;
 
@@ -54,9 +55,6 @@ const PropertyCard = ({ property }: { property: Property }) => {
                 </div>
                 <h3
                     className="absolute top-[10px] right-[10px] bg-white px-4 py-2 rounded-lg text-blue-500 font-bold text-right md:text-center lg:text-right">
-                    {/* ${property.rates.monthly ? `${property.rates.monthly}/mo` :
-                        property.rates.weekly ? `${property.rates.weekly}/wk` :
-                            property.rates.nightly ? `${property.rates.nightly}/night` : ''} */}
                     {getRateDisplay()}
                 </h3>
 
